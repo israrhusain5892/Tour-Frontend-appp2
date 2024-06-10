@@ -156,7 +156,7 @@ function SearchResults({ searchTerm }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://tourism-and-travel-management-system.onrender.com/public/trip/');
+        const response = await fetch('http://localhost:8081/public/trip/');
         const data = await response.json();
         const enhancedData = data.map(post => ({
           id: post.tripId,

@@ -1,31 +1,77 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { useQuery } from '@tanstack/react-query'
 import './Admin.css';
-import Navbar from '../Navbar/Navbar';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  useDisclosure,
-  Button,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input
-} from '@chakra-ui/react'
+import { getCurrentUserDetail, isLogin, doLogout } from "../Auth";
+import { useNavigate } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import TripForm from './TripForm';
+import TripViewPage from './TripViewPage';
+import photo from '../assets/Aditya_kapoor.jpg'
+import Loader from '../Loader'
+import 'remixicon/fonts/remixicon.css';
 
-// import Base from './components/Base';
+import { calc } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 
-function Admin() {
+function Admin({ children }) {
+
+  const [addressView, setAddressView] = useState(false);
+  const [packageView, setPackageView] = useState(false)
+  const [tranView, setTransView] = useState(false)
+  const [hotelView, setHotelView] = useState(false)
+  const [bookingView, setBookingView] = useState(false)
+  const [payView, setPayView] = useState(false)
+  const menu = [
+    {
+      label: 'Add Trip',
+      link: '/admin/trip'
+    }
+  ]
 
 
+  const [isOpen, setIsOpen] = useState(false);
 
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+  let [currentUser, setCurrentUser] = useState(undefined);
+
+  let navigate = useNavigate();
+
+  const [username, setUsername] = useState();
+  const [login, setLogin] = useState(false)
+
+
+  useEffect(() => {
+
+    setLogin(isLogin());
+    setCurrentUser(getCurrentUserDetail())
+
+    if (currentUser != null) {
+      setUsername(currentUser.userDto.name)
+    }
+  }, [login])
+
+
+  const Logout = () => {
+    doLogout(() => {
+      setLogin(false)
+      navigate("/signup");
+
+    })
+
+  }
+
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const [stateNamee, setStateNamee] = useState('');
   const [tripName, setTripName] = useState('');
   const [tripAddress, setTripAddress] = useState('');
@@ -34,21 +80,14 @@ function Admin() {
   const [stateNam, setStateName] = useState();
   const [toggleState, setToggleState] = useState(false)
   const [city, setCity] = useState();
-  // console.log(stateName);
+
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [cityList, setCityList] = useState([]);
-  const [tripResponse, setTripResponse] = useState([]);
 
-  // const { isOpen, onOpen, onClose } = useDisclosure()
-
-  // const initialRef = React.useRef(null)
-  // const finalRef = React.useRef(null)
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  // const bgColor = useColorModeValue('white','gray');
-  // const color = useColorModeValue('black', 'gray');
-
+  const [tripView, setTripView] = useState(false);
+  const [margin, setMargin] = useState(0);
+  const [profileMenu, setProfileMenu] = useState(false);
 
   const [categories, setCategories] = useState([]);
 
@@ -59,10 +98,37 @@ function Admin() {
 
   const [cityForm, setCityForm] = useState(false);
 
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
+  const [view, setView] = useState(false);
+
+  const [viewForm, setViewForm] = useState(false)
+
+  const [tripResponse, setTripResponse] = useState([]);
+
+  const fetchTodoList = async () => {
+    const res = await axios.get('http://localhost:8081/public/trip/')
+
+    if (!res.ok) {
+      throw new Error('Network response was not ok');
+    }
+    setTripResponse(res.data)
+
+
+  }
+
+  console.log(tripResponse)
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['todos'],
+    queryFn: fetchTodoList,
+  })
+
+
+
+  console.log(data)
 
   useEffect(() => {
-    axios.get("https://tourism-and-travel-management-system.onrender.com/public/state/").then((res) => {
+    axios.get("http://localhost:8081/public/state/").then((res) => {
       console.log(res.data);
       setStates(res.data);
     }).catch((error) => {
@@ -72,7 +138,7 @@ function Admin() {
 
   useEffect(() => {
 
-    axios.get('https://tourism-and-travel-management-system.onrender.com/public/city/').then((res) => {
+    axios.get('http://localhost:8081/public/city/').then((res) => {
       // console.log(res.data)
       setCityList(res.data);
     }).catch(error => {
@@ -82,29 +148,9 @@ function Admin() {
 
   }, [])
 
-  const handleStateChange = (stateName) => {
-    const filterCity = cityList.filter((x) => x.stateName === stateName);
-    console.log(filterCity);
-    setCities(filterCity)
 
-  }
 
-  // useEffect(()=>{
 
-  //      axios.get("http://localhost:3001/").then(res=>{
-  //            setData(res.data)
-  //      })
-  // },[])
-
-  useEffect(() => {
-    const res = axios.get('https://tourism-and-travel-management-system.onrender.com/public/trip/').
-      then(res => {
-        setTripResponse(res.data)
-        console.log(res);
-      }).catch((error) => {
-        console.log(error);
-      })
-  }, [])
 
   const tripData = JSON.stringify({
     tripName: tripName,
@@ -114,57 +160,10 @@ function Admin() {
   });
 
   // Handle changes in input fields
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    switch (name) {
-
-      case 'tripName':
-        setTripName(value);
-        break;
-      case 'tripAddress':
-        setTripAddress(value);
-        break;
-      case 'tripPrice':
-        setTripPrice(value);
-        break;
-      default:
-        break;
-    }
-  };
-
-  // Handle file selection
-  const handleFileChange = (event) => {
-    setTripPhoto(event.target.files[0]);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formDataToSend = new FormData();
-    formDataToSend.append('tripData', tripData);
-    // formDataToSend.append('tripAddress', formData.tripAddress);
-    // formDataToSend.append('tripPrice', formData.tripPrice);
-    formDataToSend.append('tripPhoto', tripPhoto);
-
-    console.log(formDataToSend);
-    const state = "Uttar Pradesh";
-
-    try {
-      const response = await axios.post(`https://tourism-and-travel-management-system.onrender.com/public/trip/${stateNam}/${cityName}/${categoryName}`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      alert("submit data successfully");
-      console.log(response.data);
-    } catch (error) {
-      alert("some thing went wrong");
-      console.error('Error submitting form:', error);
-    }
-  };
 
 
   useEffect(() => {
-    axios.get("https://tourism-and-travel-management-system.onrender.com/public/tripCategory/").then((res => {
+    axios.get("http://localhost:8081/public/tripCategory/").then((res => {
       console.log(res.data);
       setCategories(res.data)
     }))
@@ -172,30 +171,11 @@ function Admin() {
 
 
 
-  //  useEffect(()=>{
 
-  //   var axios = require('axios');
-
-  //   var config = {
-  //     method: 'get',
-  //     url: 'https://api.countrystatecity.in/v1/countries/IN/states',
-  //     headers: {
-  //       'X-CSCAPI-KEY': 'API_KEY'
-  //     }
-  //   };
-
-  //   axios(config)
-  //   .then(function (response) {
-  //     console.log(JSON.stringify(response.data));
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });
-  //  },[])
 
   const handleStateForm = async (e) => {
     e.preventDefault();
-    await axios.post("https://tourism-and-travel-management-system.onrender.com/public/state/", {
+    await axios.post("http://localhost:8081/public/state/", {
       stateName: stateNam
     })
 
@@ -208,7 +188,7 @@ function Admin() {
     e.preventDefault();
     console.log(stateNamee)
     if (stateNamee != null) {
-      await axios.post(`https://tourism-and-travel-management-system.onrender.com/public/city/${stateNamee}`,
+      await axios.post(`http://localhost:8081/public/city/${stateNamee}`,
 
         {
           cityName: cityName
@@ -225,395 +205,398 @@ function Admin() {
 
   }
 
+  function showView() {
+    setView(true)
+    setViewForm(true)
+    setTripView(false)
+  }
+
+  function tripView1() {
+    setView(true)
+    setViewForm(false)
+    setTripView(true);
+  }
+
+
+ 
+   function Main(){
+        navigate("/admin/dashboard")
+   }
+  
+
 
   return (
 
-    <>
-      <Navbar />
-       {/* modal */}
 
-      
-       
-       
-         
-       {/* modal */}
-      <div style={{ marginTop: "80px" }}>
-        {/* <h1 style={{textAlign:"center",background:"rgb(225, 188, 77)", fontSize:22, marginLeft:"260px", height:"35px", width:"1000px", color:"white"}}>ADMIN DASHBOARD</h1> */}
-        {/* side bar */}
-
-        {/* <!-- Sidebar --> */}
-        <div className='flex space-between'>
-          <div id="sidebar" className="sidebar ZIndex-10  bg-[#e1bc4d] w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
-            {/* <!-- Branding & Profile Info --> */}
-            <div class="flex items-center space-x-2 px-4">
-              <i class="fas fa-user-circle fa-3x text-blue-500"></i>
-              <span class="text-2xl font-extrabold text-blue-500">Admin</span>
-            </div>
-
-           
-
-            {/* <!-- Navigation Links --> */}
-            <nav>
-              <a href="#" onClick={(e) => setSateForm(!stateForm)} class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                Add States
-              </a>
-              {stateForm &&
+    <div>
 
 
-                <form className='stateForm'
-                  style={{
-                    marginTop: 10,
-                    marginInline: 0,
-                  }}
-                  onSubmit={handleStateForm}
-                >
-                  <input
+      <aside style={{ marginLeft: margin, transition: '0.3s' }} className=' flex md:w-[250px] h-full left-0 top-0   bg-[#e1bc4d]  space-y-7 py-0 px-2 fixed'>
 
-                    value={stateNam}
-                    onChange={(e) => setStateName(e.target.value)}
-                    style={{
-                      padding: 6,
-                      width: 240,
-                      borderRadius: 5,
-                      outline: 'none',
-                      border: '1px solid gray',
-                      marginTop: '-10PX'
-                    }}
+        <div>
+          <div onClick={Main} class=" w-full space-x-[-7px] ">
+            <i class="fas fa-user-circle fa-3x text-blue-500"></i>
+            <Button  className='bg-blue-500 shadow-xl px-[10px]  mr-16  py-2  w-[250px] '><span class="text-2xl  font-extrabold text-white">Admin</span></Button>
+          </div>
 
-                    type="text" placeholder='enter state' />
-                  <button
+          <nav>
+            <div>
+               {/* Address management */}
 
-                    style={{
-                      padding: 4,
-                      width: 240,
-                      background: 'blue',
-                      border: 'none',
-                      color: 'white',
-                      borderRadius: 5,
-                      marginTop: 2
-                    }}
+              <div onClick={() => setAddressView(!addressView)}  className='py-2 mt-4 px-2   transition  hover:bg-blue-500 duration-200 text-white'>
+                <i className="ri-building-fill px-2   text-xl"></i>
+                <Link className="text-lg   font-semibold">
+                  Address Management
+                </Link>
 
-                    type="submit">Add State</button>
-                </form>
-              }
-              <a href="#" onClick={(e) => setCityForm(!cityForm)} class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                Add City
-              </a>
-              {/* city from */}
 
-              {cityForm &&
+              </div>
+              {
+                addressView && <div className='py-1 ml-8'>
 
-                <div> <select className='selectItem' name="stateName"
-                  value={stateNamee}
-                  onChange={e => setStateNamee(e.target.value)}
-                  style={{ width: 240, borderRadius: '!important none', marginTop: 2, marginBottom: 1, padding: 7 }}
-                >
-                  <option selected disabled>Select state</option>
-                  {
-                    states.map((ele, i) => {
-                      return <option key={i} name="stateName" value={ele.stateName}>{ele.stateName}</option>
-                    })
-                  }
+                  <div className=' transition duration-200 hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill text-white"></i>
+                    <Link className='py-0.5 px-4 font-semibold text-white' onClick={(e) => setSateForm(!stateForm)}>Add State</Link>
+                    {stateForm &&
 
-                </select>
-                  <form className='stateForm'
-                    style={{
-                      marginTop: 2,
-                      marginInline: 0
-                    }}
-                    onSubmit={handleCityForm}
-                  >
-                    <input
-                      value={cityName}
-                      onChange={(e) => setCityName(e.target.value)}
-                      style={{
-                        padding: 7,
-                        borderRadius: 5,
-                        width: 240,
-                        outline: 'none',
-                        border: '1px solid gray',
-                        marginRight: 0,
-                      }}
 
-                      tyep="text" placeholder='enter city' />
-                    <button
+                      <form className='stateForm mt-4'
+                        style={{
+                          marginTop: 10,
+                          marginInline: 0,
+                        }}
+                        onSubmit={handleStateForm}
+                      >
+                        <input
 
-                      style={{
-                        padding: 7,
-                        background: 'blue',
-                        width: 240,
-                        border: 'none',
-                        color: 'white',
-                        marginTop: 3,
-                        borderRadius: 5
-                      }}
+                          value={stateNam}
+                          required
+                          onChange={(e) => setStateName(e.target.value)}
+                          style={{
+                            padding: 6,
+                            width: 200,
+                            borderRadius: 5,
+                            outline: 'none',
+                            border: '1px solid gray',
+                            marginTop: '-10PX'
+                          }}
 
-                      type="submit">add city</button>
-                  </form>
+                          type="text" placeholder='enter state' />
+                        <button
+
+                          style={{
+                            padding: 4,
+                            width: 200,
+                            background: 'blue',
+                            border: 'none',
+                            color: 'white',
+                            borderRadius: 5,
+                            marginTop: 2
+                          }}
+
+                          type="submit">Add State</button>
+                      </form>
+                    }
+                  </div>
+                  <div className=' transition duration-200 hover:bg-blue-500 '>
+                    <i className="ri-checkbox-blank-circle-fill text-white"></i>
+                    <Link onClick={(e) => setCityForm(!cityForm)} className="py-0.5 px-4 font-semibold text-white">
+                      Add City
+                    </Link>
+
+                    {cityForm &&
+
+                      <div> <select className='selectItem' name="stateName"
+                        value={stateNamee}
+
+                        onChange={e => setStateNamee(e.target.value)}
+                        style={{ width: 200, borderRadius: '!important none', marginTop: 2, marginBottom: 1, padding: 7 }}
+                        >
+                          <option selected disabled>Select state</option>
+                        {
+                          states.map((ele, i) => {
+                            return <option key={i} name="stateName" value={ele.stateName}>{ele.stateName}</option>
+                          })
+                        }
+
+                      </select>
+                        <form className='stateForm'
+                          style={{
+                            marginTop: 2,
+                            marginInline: 0
+                          }}
+                          onSubmit={handleCityForm}
+                        >
+                          <input
+                            value={cityName}
+                            required
+                            onChange={(e) => setCityName(e.target.value)}
+                            style={{
+                              padding: 7,
+                              borderRadius: 5,
+                              width: 200,
+                              outline: 'none',
+                              border: '1px solid gray',
+                              marginRight: 0,
+                            }}
+
+                            tyep="text" placeholder='enter city' />
+                          <button
+
+                            style={{
+                              padding: 7,
+                              background: 'blue',
+                              width: 200,
+                              border: 'none',
+                              color: 'white',
+                              marginTop: 3,
+                              borderRadius: 5
+                            }}
+
+                            type="submit">add city</button>
+                        </form>
+                      </div>
+                    }
+
+                  </div>
                 </div>
               }
-              {/* city form */}
-              
-              <a  onClick={onOpen} class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                Add Trip
-              </a>
-             -m
-              <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                Add Hotel
-              </a>
-              <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                Add Vehicle
-              </a>
-              <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                View Trips
-              </a>
-              <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                View Hotels
-              </a>
-              <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                View Vehicles
-              </a>
-              <a href="#" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-500 hover:text-white">
-                View Bookings
-              </a>
-            </nav>
-          </div>
-          {/* side bar */}
-
-          <div class="grid w-[1000px]  px-20 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-
-            {/* <!-- Trips Card --> */}
-            <div class="bg-white  hover:bg-gray-200 p-6 rounded-lg shadow-lg flex items-center space-x-4">
-              <div class="bg-blue-500 text-white p-4 rounded-full">
-                <i class="fas fa-plane-departure fa-2x"></i>
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Trips</h2>
-                <p class="text-gray-600 text-3xl font-bold">150</p>
-              </div>
             </div>
 
-            {/* <!-- Hotels Card --> */}
-            <div class="bg-white hover:bg-gray-200 p-6 rounded-lg shadow-lg flex items-center space-x-4">
-              <div class="bg-green-500 text-white p-4 rounded-full">
-                <i class="fas fa-hotel fa-2x"></i>
+             {/* package management */}
+            <div>
+              <div onClick={() => setPackageView(!packageView)} className='py-1  px-2  transition  hover:bg-blue-500 duration-200 text-white'>
+                <i className="ri-red-packet-line px-2 text-lg"></i>
+                <Link  className='text-lg font-semibold'>
+                  Package Management
+                </Link>
               </div>
-              <div>
-                <h2 class="text-xl font-semibold">Hotels</h2>
-                <p class="text-gray-600 text-3xl font-bold">45</p>
-              </div>
+              {packageView &&
+                <div className='text-white  ml-8'>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link to="/admin/tripform" className='px-2 font-semibold'>Add Trip</Link>
+                  </div>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link  to="/admin/tripview"className='px-2 font-semibold'>View Trips</Link>
+                  </div>
+
+                </div>
+              }
+
             </div>
 
-            {/* <!-- Vehicles Card --> */}
-            <div class="bg-white   hover:bg-gray-200 p-6 rounded-lg shadow-lg flex items-center space-x-4">
-              <div class="bg-yellow-500 text-white p-4 rounded-full">
-                <i class="fas fa-car fa-2x"></i>
+            {/* hotel management */}
+
+            <div>
+              <div className='py-1  px-2  transition  hover:bg-blue-500 duration-200 text-white'>
+                <i className="ri-hotel-line text-lg px-2"></i>
+                <Link onClick={() => setHotelView(!hotelView)} className='text-lg font-semibold'>
+                  Hotel Management
+                </Link>
               </div>
-              <div>
-                <h2 class="text-xl font-semibold">Vehicles</h2>
-                <p class="text-gray-600 text-3xl font-bold">75</p>
-              </div>
+              {hotelView &&
+                <div className='text-white  ml-8'>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>Add Hotel</Link>
+                  </div>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>View Hotels</Link>
+                  </div>
+
+                </div>
+              }
+
             </div>
 
-            {/* trip booking card */}
-            <div class="bg-white  hover:bg-gray-200 p-6 rounded-lg shadow-lg flex items-center space-x-4">
-              <div class="bg-yellow-500 text-white p-4 rounded-full">
-                <i class="fas fa-car fa-2x"></i>
+            {/* Transport management */}
+            <div>
+              <div className='py-1  px-2  transition  hover:bg-blue-500 duration-200 text-white'>
+                <i className="ri-bus-fill text-lg px-2"></i>
+                <Link onClick={() => setTransView(!tranView)} className='text-lg font-semibold'>
+                  Transport Management
+                </Link>
               </div>
-              <div>
-                <h2 class="text-xl font-semibold">Trip Booking</h2>
-                <p class="text-gray-600 text-3xl font-bold">75</p>
-              </div>
+
+              {tranView &&
+                <div className='text-white  ml-8'>
+
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>Add Bus</Link>
+                  </div>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>View Buses</Link>
+                  </div>
+
+                </div>
+              }
             </div>
 
+            {/* Booking Managemrnt */}
+            <div>
+              <div className='py-1  px-2  transition  hover:bg-blue-500 duration-200 text-white'>
+                <i className="ri-ticket-2-line text-lg px-2"></i>
+                <Link onClick={()=>setBookingView(!bookingView)} className='text-lg font-semibold'>
+                  Booking Management
+                </Link>
+              </div>
+              {bookingView &&
+                <div className='text-white  ml-8'>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>Trip Bookings</Link>
+                  </div>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>Bus Bookings</Link>
+                  </div>
 
-            <div class="bg-white hover:bg-gray-200 p-6 rounded-lg shadow-lg flex items-center space-x-4">
-              <div class="bg-yellow-500 text-white p-4 rounded-full">
-                <i class="fas fa-car fa-2x"></i>
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Vehice Booking</h2>
-                <p class="text-gray-600 text-3xl font-bold">75</p>
-              </div>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>Hotel Bookings</Link>
+                  </div>
+
+                </div>
+              }
+
             </div>
 
-            <div class="bg-white hover:bg-gray-200 p-6 rounded-lg shadow-lg flex items-center space-x-4">
-              <div class="bg-yellow-500 text-white p-4 rounded-full">
-                <i class="fas fa-car fa-2x"></i>
+            {/* Payment Management */}
+            <div>
+              <div className='py-1  px-2  transition  hover:bg-blue-500 duration-200 text-white'>
+                <i className="ri-money-rupee-circle-line text-lg px-2"></i>
+                <Link onClick={() => setPayView(!payView)} className='text-lg font-semibold'>
+                  Payment Management
+                </Link>
               </div>
-              <div>
-                <h2 class="text-xl font-semibold">Hotel Booking</h2>
-                <p class="text-gray-600 text-3xl font-bold">75</p>
-              </div>
+              {payView &&
+                <div className='text-white  ml-8'>
+                  <div className='hover:bg-blue-500'>
+                    <i className="ri-checkbox-blank-circle-fill"></i>
+                    <Link className='px-2 font-semibold'>View Payments</Link>
+                  </div>
+                </div>
+              }
             </div>
-          </div>
-
+          </nav>
         </div>
-        {/* <!-- Additional Content --> */}
-        <div class="mt-12">
-          <h2 class="text-2xl font-semibold mb-4">Overview</h2>
-          <p class="text-gray-700">
-            Here you can view the summary of your trips, hotels, and vehicles. Use the navigation above to manage each category or add new entries. The dashboard is designed to give you a quick snapshot of your operations.
-          </p>
-        </div>
+      </aside>
 
+      <section
+        className=' bg-[#eee] h-screen'
+        style={{
 
+          marginLeft: (margin == 0) ? 250 : 0,
+          transition: '0.3s'
 
-        <div className='container-div'>
-          <div>
+        }}
+      >
+        <nav className="bg-white p-4">
+          <svg onClick={() => setMargin(margin == -300 ? 0 : -300)} className='w-[20px] p-0 mt-3 mr-10  absolute' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
+          <div className="container mx-auto flex justify-between items-center">
 
+            <div className="text-black ml-[40px] text-2xl font-bold">Admin Panel</div>
 
-
-            {/* city form */}
-
-            <br></br>
-
-
-
-            {/* end city form */}
-          </div>
-
-
-          <div className='tripForm'>
-
-
-            <form
-
-              className="tripForm1"
-              onSubmit={handleSubmit}>
-              <select className='selectItem' name="stateName"
-
-                value={stateNam}
-
-                onChange={e => handleStateChange(e.target.value)}
-                required
+            <div className="block lg:hidden">
+              <button
+                onClick={toggleMenu}
+                className="text-black focus:outline-none"
               >
-                <option selected disabled>Select state</option>
-                {
-                  states.map((ele, i) => {
-                    return <option key={i} name="stateName" value={ele.stateName}>{ele.stateName}</option>
-                  })
-                }
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"}
+                  />
+                </svg>
+              </button>
+            </div>
+            <div
+              className={`${isOpen ? 'block' : 'hidden'
+                } lg:flex lg:items-center lg:w-auto w-full`}
+            >
+              <ul className="lg:flex lg:space-x-6 space-y-2 lg:space-y-0">
+                <li>
+                  <Link className="text-black text-lg px-2 py-1  hover:bg-[#e1bc4d] hover:text-white block lg:inline-block">
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link className="text-black text-lg px-2 py-1  hover:bg-[#e1bc4d] hover:text-white block lg:inline-block">
+                    Users
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="text-black text-lg px-2 py-1  hover:bg-[#e1bc4d] hover:text-white block lg:inline-block">
+                    Settings
+                  </Link>
+                </li>
+                <li>
 
-              </select>
-              <select className='selectItem'
+                  <div>
+                    <button className='relative'>
+
+                      <img className='w-8 h-8 rounded-full hover:scale-125 ' onClick={() => setProfileMenu(!profileMenu)} src={photo} />
+                      {
+                        profileMenu && <div className='min-w-[200px] p-6 shadow-lg absolute bg-white top-10 right-0'>
+                          <div >
+                            <h1 className='text-lg hover:bg-gray-200 font-semibold'>Israr Husain</h1>
+                            <p className='text-gray-500 hover:bg-[#eee]'>israrhusain5892@gmail.com</p>
+                            <div className='h-px bg-gray-300 my-4' />
+                            <button className='flex hover:bg-gray-200 w-[200px] justify-center mx-auto gap-2 items-center'>
+                              <svg className='w-5' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg>
+                              Logout
+                            </button>
+                          </div>
+                        </div>
+                      }
 
 
-                value={cityName}
+                    </button>
 
-                onChange={e => setCityName(e.target.value)}
-                required
-              >
-                <option selected disabled>Select City</option>
-                {
-                  cities.map((cityElement, i) => {
-                    return <option key={i} value={cityElement.cityName}>{cityElement.cityName}</option>
-                  })
-                }
-              </select>
+                  </div>
 
-
-              <select className='selectItem'
-                value={categoryName}
-
-                onChange={e => setCategoryName(e.target.value)}
-                required
-              >
-                <option selected disabled>Select Category</option>
-                {
-                  categories.map((category, i) => {
-                    return <option required key={i} value={category.categoryName}>{category.categoryName}</option>
-                  })
-                }
-              </select>
-
-
-              <input type="text" required name="tripName" placeholder="Enter trip Name" value={tripName} onChange={handleChange} /><br></br>
-              <input type="text" required name="tripAddress" placeholder="Enter trip Address" value={tripAddress} onChange={handleChange} /><br></br>
-              <input type="number" required name="tripPrice" placeholder="Enter trip Price" value={tripPrice} onChange={handleChange} /><br></br>
-              <input type="file" required placeholder="choose file" name="tripPhoto" onChange={handleFileChange} /><br></br>
-              <button type="submit">Add Trip</button>
-            </form>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-        <br></br>
+        </nav>
+
+        {children}
+
+      </section>
+
+
+      {
 
 
 
-        <div class="max-w-6xl mx-auto">
-          <h1 class="text-3xl font-bold mb-4">Responsive Trip Table</h1>
+        tripView &&
+        <TripViewPage isPending={isPending} list={tripResponse}>
 
-          <div class="overflow-x-auto bg-white rounded-lg shadow">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Container ID
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trip Name
-                  </th>
-                  {/* <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Trip Address
-                        </th> */}
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trip Price
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trip Photo
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                {
-                  tripResponse.map((trip, index) => {
+        </TripViewPage>
 
-                    return <tr>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        {index + 1}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        {trip.tripName}
-                      </td>
-                      {/* <td class="px-6 py-4 whitespace-nowrap">
-                          {trip.tripAddress}
-                      </td> */}
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        ₹{trip.tripPrice}
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <img src={trip.url} alt="Trip Photo" class="w-12 h-12 object-cover rounded" />
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <button class="px-2 py-1 bg-red-500 text-white rounded hover:bg-blue-700">
-                          Delete
-                        </button>
-                        <button class="px-2 ml-5 py-1 bg-blue-500 text-white rounded hover:bg-blue-700">
-                          Edit
-                        </button>
+      }
 
-                      </td>
+      {
+        viewForm && <TripForm />
+      }
 
+    </div>
 
-                    </tr>
-                  })
-
-                }
-                {/* <!-- Add more rows as needed --> */}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-     
-
-
-
-      </div>
-    </>
   );
 
 }

@@ -7,20 +7,20 @@
        justify-content: center;
        flex-direction: column;
        align-items: center;
-       width:400px;
+       width:450px;
        padding: 30px;
        row-gap:20px;
        column-gap: 30px;
        /* margin:auto; */
        margin-top: 20px;
-       box-shadow: 1px 1px 8px rgba(0,0,0,0.5);
+       box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
        border-radius: 5px;
    }
   
   
   .tripForm input{
-        width:300px;
-        padding: 4px;
+        width:400px;
+        padding: 6px;
         border-radius: 4px;
         border: 1px solid rgba(0,0,0,0.3);
         outline: none;
@@ -29,7 +29,7 @@
   
   }
   .tripForm button{
-        background-color: blue;
+        background-color:#e1bc4d;
         color:white;
         border-radius: 5px;
         border: none;
@@ -38,8 +38,8 @@
   }
   
   .selectItem {
-    width:300px;
-    padding: 4px;
+    width:400px;
+    padding: 6px;
     border-radius: 4px;
     border: 1px solid rgba(0,0,0,0.3);
     outline: none;
