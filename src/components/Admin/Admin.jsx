@@ -106,7 +106,7 @@ function Admin({ children }) {
   const [tripResponse, setTripResponse] = useState([]);
 
   const fetchTodoList = async () => {
-    const res = await axios.get('http://localhost:8081/public/trip/')
+    const res = await axios.get('https://indian-tourism-jn3h.onrender.com/public/trip/')
 
     if (!res.ok) {
       throw new Error('Network response was not ok');
@@ -128,7 +128,7 @@ function Admin({ children }) {
   console.log(data)
 
   useEffect(() => {
-    axios.get("http://localhost:8081/public/state/").then((res) => {
+    axios.get("https://indian-tourism-jn3h.onrender.com/public/state/").then((res) => {
       console.log(res.data);
       setStates(res.data);
     }).catch((error) => {
@@ -138,7 +138,7 @@ function Admin({ children }) {
 
   useEffect(() => {
 
-    axios.get('http://localhost:8081/public/city/').then((res) => {
+    axios.get('https://indian-tourism-jn3h.onrender.com/public/city/').then((res) => {
       // console.log(res.data)
       setCityList(res.data);
     }).catch(error => {
@@ -163,7 +163,7 @@ function Admin({ children }) {
 
 
   useEffect(() => {
-    axios.get("http://localhost:8081/public/tripCategory/").then((res => {
+    axios.get("https://indian-tourism-jn3h.onrender.com/public/tripCategory/").then((res => {
       console.log(res.data);
       setCategories(res.data)
     }))
@@ -175,7 +175,7 @@ function Admin({ children }) {
 
   const handleStateForm = async (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:8081/public/state/", {
+    await axios.post("https://indian-tourism-jn3h.onrender.com/public/state/", {
       stateName: stateNam
     })
 
@@ -188,7 +188,7 @@ function Admin({ children }) {
     e.preventDefault();
     console.log(stateNamee)
     if (stateNamee != null) {
-      await axios.post(`http://localhost:8081/public/city/${stateNamee}`,
+      await axios.post(`https://indian-tourism-jn3h.onrender.com/public/city/${stateNamee}`,
 
         {
           cityName: cityName

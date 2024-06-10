@@ -24,14 +24,14 @@ function TripForm(props) {
   const [categoryName, setCategoryName] = useState();
 
   useEffect(() => {
-    axios.get("http://localhost:8081/public/tripCategory/").then((res => {
+    axios.get("https://indian-tourism-jn3h.onrender.com/public/tripCategory/").then((res => {
       console.log(res.data);
       setCategories(res.data)
     }))
   }, [])
 
     useEffect(() => {
-        axios.get("http://localhost:8081/public/state/").then((res) => {
+        axios.get("https://indian-tourism-jn3h.onrender.com/public/state/").then((res) => {
           console.log(res.data);
           setStates(res.data);
         }).catch((error) => {
@@ -48,7 +48,7 @@ function TripForm(props) {
     
       useEffect(() => {
     
-        axios.get('http://localhost:8081/public/city/').then((res) => {
+        axios.get('https://indian-tourism-jn3h.onrender.com/public/city/').then((res) => {
           // console.log(res.data)
           setCityList(res.data);
         }).catch(error => {
@@ -83,6 +83,12 @@ function TripForm(props) {
         setTripPhoto(event.target.files[0]);
       };
     
+      const tripData = JSON.stringify({
+        tripName: tripName,
+        tripAddress: tripAddress,
+        tripPrice: tripPrice,
+    
+      });
       const handleSubmit = async (e) => {
         e.preventDefault();
         const formDataToSend = new FormData();
@@ -95,7 +101,7 @@ function TripForm(props) {
         const state = "Uttar Pradesh";
     
         try {
-          const response = await axios.post(`http://localhost:8081/public/trip/${stateNam}/${cityName}/${categoryName}`, formDataToSend, {
+          const response = await axios.post(`https://indian-tourism-jn3h.onrender.com/public/trip/${stateNam}/${cityName}/${categoryName}`, formDataToSend, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
