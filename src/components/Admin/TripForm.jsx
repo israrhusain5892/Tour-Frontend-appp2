@@ -7,7 +7,7 @@ import Admin from './Admin';
 
 function TripForm(props) {
        
-    const [stateNamee, setStateNamee] = useState('');
+    const [stateName, setStateNamee] = useState('');
     const [tripName, setTripName] = useState('');
     const [tripAddress, setTripAddress] = useState('');
     const [tripPrice, setTripPrice] = useState('');
@@ -22,6 +22,7 @@ function TripForm(props) {
 
   const [cityName, setCityName] = useState();
   const [categoryName, setCategoryName] = useState();
+  
 
   useEffect(() => {
     axios.get("https://indian-tourism-jn3h.onrender.com/public/tripCategory/").then((res => {
@@ -41,6 +42,7 @@ function TripForm(props) {
 
       const handleStateChange = (stateName) => {
         const filterCity = cityList.filter((x) => x.stateName === stateName);
+        setStateName(stateName)
         console.log(filterCity);
         setCities(filterCity)
     
@@ -130,7 +132,7 @@ function TripForm(props) {
                     <select className='selectItem' name="stateName"
 
                         value={stateNam}
-
+                    
                         onChange={e => handleStateChange(e.target.value)}
                         required
                     >
