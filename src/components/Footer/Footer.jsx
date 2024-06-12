@@ -3,7 +3,7 @@ import logo from '../assets/logo2.png'
 
 export default function Component() {
     return (
-        <footer className="bg-[#000080] py-4 md:py-8 lg:py-5 dark:bg-[#000080] z-999">
+        <footer className="bg-[#600180] py-4 md:py-8 lg:py-5 dark:bg-[#600180] z-999">
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
                     <div className="flex flex-col items-start">

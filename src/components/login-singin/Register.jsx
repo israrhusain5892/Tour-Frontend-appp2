@@ -6,18 +6,18 @@ const Register = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
-        mobile: '',
+        mobileNumber: '',
         email: '',
-        username: '',
+        
         password: '',
         confirmPassword: '',
     });
 
     const [errors, setErrors] = useState({
         name: '',
-        mobile: '',
+        mobileNumber: '',
         email: '',
-        username: '',
+        
         password: '',
         confirmPassword: '',
     });
@@ -41,12 +41,12 @@ const Register = () => {
         }
     
         // Mobile
-        if (!formData.mobile) {
+        if (!formData.mobileNumber) {
             formIsValid = false;
-            errors.mobile = 'Mobile number cannot be empty';
-        } else if (!/^[6-9]\d{9}$/.test(formData.mobile)) {
+            errors.mobileNumber = 'Mobile number cannot be empty';
+        } else if (!/^[6-9]\d{9}$/.test(formData.mobileNumber)) {
             formIsValid = false;
-            errors.mobile = 'Invalid mobile number. It should start with 9, 8, 7, or 6 and be 10 digits long';
+            errors.mobileNumber = 'Invalid mobile number. It should start with 9, 8, 7, or 6 and be 10 digits long';
         }
     
         // Email
@@ -58,11 +58,7 @@ const Register = () => {
             errors.email = 'Invalid email address';
         }
     
-        // Username
-        if (!formData.username) {
-            formIsValid = false;
-            errors.username = 'Username cannot be empty';
-        }
+        
     
         // Password
         if (!formData.password) {
@@ -94,7 +90,7 @@ const Register = () => {
         e.preventDefault();
         if (handleValidation()) {
             try {
-                const response = await fetch('http://localhost:8000/register', {
+                const response = await fetch('https://indian-tourism-1.onrender.com/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -180,14 +176,14 @@ const Register = () => {
                                 <input
                                     type="text"
                                     className="peer block min-h-[auto] w-full rounded border-0 bg-gray-200 px-3 py-[0.32rem] leading-[2.15] outline-none dark:text-black"
-                                    id="mobile"
-                                    name="mobile"
-                                    value={formData.mobile}
+                                    id="mobileNumber"
+                                    name="mobileNumber"
+                                    value={formData.mobileNumber}
                                     onChange={handleChange}
                                     placeholder="Mobile Number"
                                 />
-                                {errors.mobile && (
-                                    <div className="text-red-500 text-sm">{errors.mobile}</div>
+                                {errors.mobileNumber && (
+                                    <div className="text-red-500 text-sm">{errors.mobileNumber}</div>
                                 )}
                             </div>
 
@@ -206,20 +202,7 @@ const Register = () => {
                                 )}
                             </div>
 
-                            <div className="relative mb-6" data-twe-input-wrapper-init>
-                                <input
-                                    type="text"
-                                    className="peer block min-h-[auto] w-full rounded border-0 bg-gray-200 px-3 py-[0.32rem] leading-[2.15] outline-none dark:text-black"
-                                    id="username"
-                                    name="username"
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    placeholder="Username"
-                                />
-                                {errors.username && (
-                                    <div className="text-red-500 text-sm">{errors.username}</div>
-                                )}
-                            </div>
+                            
 
                             <div className="relative mb-6" data-twe-input-wrapper-init>
                                 <input

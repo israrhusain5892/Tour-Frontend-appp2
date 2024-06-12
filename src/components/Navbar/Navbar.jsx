@@ -44,12 +44,12 @@ const NavBar = () => {
   
 
   return (
-    <nav className="bg-white dark:bg-[#000080] fixed w-full z-[999] top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+    <nav className="bg-white dark:bg-[#600180] fixed w-full z-[999] top-0 start-0 border-b border-gray-200 dark:border-gray-600">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-3">
         <Link to="/" className="flex items-center overflow-hidden p-0 rtl:space-x-reverse">
           <img src={logo} className="h-20 w-22" alt="Indian Traverse Logo" />
           <span className="self-center font-semibold whitespace-nowrap dark:text-white text-base md:text-lg lg:text-2xl">
-            <span className="text-orange-600">In</span>di<span className="text-green-600">an</span> Traverse
+            <span className="text-orange-600">Wonders</span>Of<span className="text-green-600">Bharat</span>
           </span>
         </Link>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
@@ -57,7 +57,7 @@ const NavBar = () => {
 
             !login &&  <NavLink
               to="/login"
-              className="text-blue-600 bg-white hover:bg-white focus:ring-4 focus:outline-none focus:ring-black font-bold rounded-lg text-md px-4 py-2 text-center dark:bg-white dark:hover:bg-[#e2e8f0] dark:focus:ring-blue-500"
+              className="text-[#600180] bg-white hover:bg-white focus:ring-4 focus:outline-none focus:ring-black font-bold rounded-lg text-md px-4 py-2 text-center dark:bg-white dark:hover:bg-[#e2e8f0] dark:focus:ring-blue-500"
                >
                Login
             </NavLink>
@@ -66,14 +66,16 @@ const NavBar = () => {
 
          {
             
-             login && <div className="border rounded-full px-3 h-8 hover:bg-gray-100 shadow min-w-[90px] flex gap-2 justify-center align-center">
-             <NavLink onClick={Logout}>
-               <img className="w-6" src={turnoff}></img>
-             </NavLink>
+             login &&<NavLink onClick={Logout}>
+               <div className=" flex  bg-[#e3edf7] p-2 rounded-lg  border border-transparent cursor-pointer transition-transform duration-500 hover:hover:border-gray-300 hover:translate-y-1">
+             
+               <img className="w-6 mr-2 " src={turnoff}></img>
+             
             
-             <p className="text-xl text-blue-600">{username}</p>
-
+             <p className="text-xl text-[#600180]">{username}</p>
+            
            </div>
+           </NavLink>
 
           
 

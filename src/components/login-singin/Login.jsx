@@ -23,19 +23,21 @@ const LoginForm = () => {
       };
     
 
-    const handleLogin = async () => {
+      const handleLogin = async () => {
         try {
-            const response = await axios.post('https://tourism-and-travel-management-system.onrender.com/auth/login', 
-                loginForm 
-            );
+            const response = await axios.post('https://indian-tourism-1.onrender.com/auth/login', loginForm);
 
-            if (response.status===200 || response.status===202) {
+            if (response.status === 200 || response.status === 202) {
                 alert('Login successful');
+                const emailDomain = loginForm.email.split('@')[1];
                 setStep(2);
-                 doLogin(response.data,()=>{
-                     navigate("/")
-                 })
-                alert("login succcessfully")
+                doLogin(response.data, () => {
+                    if (emailDomain === 'numetry.com') {
+                        navigate("/admin/dashboard");
+                    } else {
+                        navigate("/");
+                    }
+                });
             }
         } catch (error) {
             setMessage('An error occurred. Please try again.');

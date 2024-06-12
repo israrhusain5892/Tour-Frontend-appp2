@@ -40,7 +40,7 @@ function ContactUs() {
         <h1 className="text-4xl md:text-[2.5rem] lg:text-[2.75rem] xl:text-[3rem] font-playfair font-bold text-lime-100 mb-4">Contact us if you're ready</h1>
         <h3 className="text-lg md:text-xl lg:text-[1.75rem] xl:text-[2rem] font-playfair font-bold text-yellow-50 mb-6">Experience the wonders of India with personalized tours crafted just for you.</h3>
         <button 
-          className="h-12 w-52 text-lg md:text-xl lg:text-[1.75rem] xl:text-[2rem] text-white bg-transparent border-2 border-white rounded-full transition-all duration-300 ease-in-out transform hover:scale-110 hover:bg-gradient-to-r hover:from-blue-500 hover:to-red-500"
+          className="font-semibold px-4 h-12 w-60 text-lg md:text-xl lg:text-[1.75rem] xl:text-[2rem] text-[#600180] bg-transparent border-2 border-[#600180] rounded-full transition-all duration-300 ease-in-out transform hover:scale-110 hover:bg-[#600180] hover:text-[#ffffff]"
           onClick={toggleModal}
         >
           CONTACT US

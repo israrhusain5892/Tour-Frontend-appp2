@@ -39,7 +39,7 @@
 }
 .Carousel-Home .Carousel-sectionText {
   position: absolute;
-  height: 100%;
+  height: 50%;
   top: 30%;
   bottom: 50%;
   color: var(--whiteColor);
