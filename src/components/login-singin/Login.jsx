@@ -25,7 +25,7 @@ const LoginForm = () => {
 
       const handleLogin = async () => {
         try {
-            const response = await axios.post('https://indian-tourism-1.onrender.com/auth/login', loginForm);
+            const response = await axios.post('https://indian-tourism-bmxw.onrender.com/auth/login', loginForm);
 
             if (response.status === 200 || response.status === 202) {
                 alert('Login successful');

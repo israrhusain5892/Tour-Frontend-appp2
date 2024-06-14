@@ -90,7 +90,7 @@ const Register = () => {
         e.preventDefault();
         if (handleValidation()) {
             try {
-                const response = await fetch('https://indian-tourism-1.onrender.com/auth/register', {
+                const response = await fetch('https://indian-tourism-bmxw.onrender.com/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

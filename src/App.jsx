@@ -12,6 +12,7 @@ import Rentals from "./components/pages/Rentals";
 import Login from "./components/login-singin/Login";
 import Register from "./components/login-singin/Register";
 import Home from "./components/home/home"
+import Packages from "./components/pages/Packages";
 import Admin from "./components/Admin/Admin";
 import TripForm from "./components/Admin/TripForm";
 import TripViewPage from "./components/Admin/TripViewPage";
@@ -37,6 +38,7 @@ function App() {
         <div className="bg-[#f8fafc] w-full min-h-screen">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/packages" element={<Packages />} />
             <Route path="/hotels" element={<Hotels />} />
             <Route path="/transportation" element={<Transportation />} />
             <Route path="/budget" element={<Budget />} />

@@ -1,4 +1,5 @@
 const links = [
+  { name: "Packages", path: "/packages" },
     { name: "Hotels", path: "/hotels" },
     { name: "Transportation", path: "/transportation" },
     { name: "Budget", path: "/budget" },

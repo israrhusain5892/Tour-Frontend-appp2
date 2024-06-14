@@ -3,45 +3,33 @@ import { NavLink } from "react-router-dom";
 import links from "../NavLinks/links";
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo2.png';
-import { getCurrentUserDetail, isLogin,doLogout } from "../Auth";
+import { getCurrentUserDetail, isLogin, doLogout } from "../Auth";
 import { useNavigate } from "react-router-dom";
 import turnoff from '../assets/turn-off.png';
-import { Select } from "@material-tailwind/react";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
-  
-
-  let [currentUser, setCurrentUser] = useState(undefined);
+  const [currentUser, setCurrentUser] = useState(undefined);
+  const [username, setUsername] = useState();
+  const [login, setLogin] = useState(false);
 
   let navigate = useNavigate();
 
-  const [username, setUsername] = useState();
-  const[login,setLogin]=useState(false)
-
-
   useEffect(() => {
-
     setLogin(isLogin());
-    setCurrentUser(getCurrentUserDetail())
+    setCurrentUser(getCurrentUserDetail());
 
     if (currentUser != null) {
-      setUsername(currentUser.userDto.name)
+      setUsername(currentUser.userDto.name);
     }
-  },[login])
+  }, [login, currentUser]);
 
-  
   const Logout = () => {
     doLogout(() => {
-      setLogin(false)
+      setLogin(false);
       navigate("/signup");
-
-    })
-
-  }
-
-
-  
+    });
+  };
 
   return (
     <nav className="bg-white dark:bg-[#600180] fixed w-full z-[999] top-0 start-0 border-b border-gray-200 dark:border-gray-600">
@@ -53,35 +41,24 @@ const NavBar = () => {
           </span>
         </Link>
         <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-         {
-
-            !login &&  <NavLink
+          {!login && (
+            <NavLink
               to="/login"
               className="text-[#600180] bg-white hover:bg-white focus:ring-4 focus:outline-none focus:ring-black font-bold rounded-lg text-md px-4 py-2 text-center dark:bg-white dark:hover:bg-[#e2e8f0] dark:focus:ring-blue-500"
-               >
-               Login
+            >
+              Login
             </NavLink>
+          )}
 
-         }
+          {login && (
+            <NavLink onClick={Logout}>
+              <div className="flex bg-[#e3edf7] p-2 rounded-lg border border-transparent cursor-pointer transition-transform duration-500 hover:hover:border-gray-300 hover:translate-y-1">
+                <img className="w-6 mr-2" src={turnoff} alt="Logout" />
+                <p className="text-xl text-[#600180]">{username}</p>
+              </div>
+            </NavLink>
+          )}
 
-         {
-            
-             login &&<NavLink onClick={Logout}>
-               <div className=" flex  bg-[#e3edf7] p-2 rounded-lg  border border-transparent cursor-pointer transition-transform duration-500 hover:hover:border-gray-300 hover:translate-y-1">
-             
-               <img className="w-6 mr-2 " src={turnoff}></img>
-             
-            
-             <p className="text-xl text-[#600180]">{username}</p>
-            
-           </div>
-           </NavLink>
-
-          
-
-              
-         }
-          
           <button
             data-collapse-toggle="navbar-sticky"
             type="button"
@@ -102,9 +79,13 @@ const NavBar = () => {
               <li key={index}>
                 <NavLink
                   to={link.path}
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                  activeClassName="text-blue-700 dark:text-gray-500"
-                  exact
+                  className={({ isActive }) => 
+                    `block py-2 px-3 rounded md:p-0 ${
+                      isActive 
+                      ? "text-white shadow-md shadow-white h-full flex items-center" 
+                      : "text-gray-900 hover:bg-gray-700 md:hover:bg-transparent md:hover:text-blue-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    }`
+                  }
                 >
                   {link.name}
                 </NavLink>

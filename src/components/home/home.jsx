@@ -16,7 +16,7 @@ export default function Home() {
       
       <CarouselDarkVariant />
        <Navbar/>
-      <Mycards/>
+      {/* <Mycards/> */}
       <Services />
       <Testimonials />
       <Contact />

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Navbar from "../Navbar/Navbar";
+import Select from 'react-select';
 
-const MyCards = () => {
+const Packages = () => {
     const [trips, setTrips] = useState([]);
     const [allTrips, setAllTrips] = useState([]);
     const [states, setStates] = useState([]);
@@ -22,7 +24,7 @@ const MyCards = () => {
 
                 setAllTrips(tripsResponse.data); // Store all trips for filtering
                 setTrips(tripsResponse.data.slice(0, itemsPerPage)); // Load only initial trips
-                setStates(statesResponse.data);
+                setStates(statesResponse.data.map(state => ({ value: state.stateName, label: state.stateName })));
                 setCategories(categoriesResponse.data);
             } catch (error) {
                 console.error("Error fetching data", error);
@@ -33,8 +35,8 @@ const MyCards = () => {
         fetchData();
     }, []);
 
-    const handleStateChange = (event) => {
-        const state = event.target.value;
+    const handleStateChange = (selectedOption) => {
+        const state = selectedOption ? selectedOption.value : '';
         setSelectedState(state);
         setCurrentPage(1); // Reset to first page
         filterTrips(state, selectedCategory, 1);
@@ -75,25 +77,50 @@ const MyCards = () => {
         }, 500); // Simulate loading time
     };
 
+    const customStyles = {
+        control: (base) => ({
+            ...base,
+            borderColor: '#600180',
+            boxShadow: 'none',
+            cursor: 'pointer',
+            '&:hover': {
+                borderColor: '#600180',
+            },
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            color: state.isSelected ? 'white' : '#600180',
+            backgroundColor: state.isSelected ? '#600180' : 'white',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+                backgroundColor: '#f0e4f7',
+                boxShadow: '0 4px 6px -1px rgba(96, 1, 128, 0.5)',
+                borderColor: '#600180',
+                borderRadius: '20px',
+                transform: 'scale(1.1)',
+            },
+        }),
+    };
+
     return (
         <>
-            <h2 className="text-5xl mt-12 font-bold text-center text-[#600180] mb-8">Our Exclusive Tour Packages</h2>
+            <Navbar />
+            <h2 className="text-5xl mt-28 font-bold text-center text-[#600180] mb-8">Our Exclusive Tour Packages</h2>
 
             <div className="flex items-center p-6 bg-gray-100 min-h-screen">
                 {/* Left Side (Dashboard Menu) */}
-                <div className="mr-12">
+                <div className="mr-12 -mt-28">
                     {/* State Dropdown */}
                     <div className="mb-6">
-                        <select
+                        <Select
+                            value={states.find(option => option.value === selectedState)}
                             onChange={handleStateChange}
-                            value={selectedState}
-                            className="p-2 border text-[#600180] rounded-md w-64 bg-white shadow"
-                        >
-                            <option value="">Select State</option>
-                            {states.map(state => (
-                                <option key={state.stateId} value={state.stateName}>{state.stateName}</option>
-                            ))}
-                        </select>
+                            options={states}
+                            isClearable
+                            placeholder="All States"
+                            styles={customStyles}
+                        />
                     </div>
                     {/* Category Buttons */}
                     <div className="flex flex-col gap-2">
@@ -109,7 +136,7 @@ const MyCards = () => {
                     </div>
                 </div>
                 {/* Right Side (Results and Filtering Options) */}
-                <div className="flex flex-col flex-1">
+                <div className="flex mt-8 flex-col flex-1">
                     {/* Results */}
                     <div className="flex flex-wrap gap-6">
                         {loading ? (
@@ -133,7 +160,7 @@ const MyCards = () => {
                                     <div className="relative w-full h-40">
                                         <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
                                             <div className="flex-col gap-4 w-full flex items-center justify-center">
-                                                <div className="w-20 h-20 border-8 text-[#600180]  text-4xl animate-spin border-[#600180] border-opacity-50 flex items-center justify-center border-t-gray-300 rounded-full">
+                                                <div className="w-20 h-20 border-8 text-[#600180] text-4xl animate-spin border-[#600180] border-opacity-50 flex items-center justify-center border-t-gray-300 rounded-full">
                                                     <svg viewBox="0 0 24 24" fill="currentColor" height="1em" width="1em" className="animate-ping">
                                                         <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"></path>
                                                     </svg>
@@ -158,7 +185,7 @@ const MyCards = () => {
                         )}
                     </div>
                     {/* Filtering Options */}
-                    <div className="mt-4 flex justify-center items-center gap-4">
+                    <div className="mt-8 flex justify-center items-center gap-4">
                         <button
                             onClick={() => handlePageChange('prev')}
                             className="px-4 py-2 border rounded-md bg-[#600180] text-white hover:bg-gray-300 text-black disabled:opacity-30"
@@ -181,4 +208,4 @@ const MyCards = () => {
     );
 };
 
-export default MyCards;
+export default Packages;

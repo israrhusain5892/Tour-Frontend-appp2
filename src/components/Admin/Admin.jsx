@@ -85,7 +85,7 @@ function Admin({ children }) {
   const [tripResponse, setTripResponse] = useState([]);
 
   const fetchTodoList = async () => {
-    const res = await axios.get('https://indian-tourism-1.onrender.com/public/trip/');
+    const res = await axios.get('https://indian-tourism-bmxw.onrender.com/public/trip/');
     if (!res.ok) {
       throw new Error('Network response was not ok');
     }
@@ -98,7 +98,7 @@ function Admin({ children }) {
   });
 
   useEffect(() => {
-    axios.get("https://indian-tourism-1.onrender.com/public/state/").then((res) => {
+    axios.get("https://indian-tourism-bmxw.onrender.com/public/state/").then((res) => {
       setStates(res.data);
     }).catch((error) => {
       console.log(error);
@@ -106,7 +106,7 @@ function Admin({ children }) {
   }, []);
 
   useEffect(() => {
-    axios.get('https://indian-tourism-1.onrender.com/public/city/').then((res) => {
+    axios.get('https://indian-tourism-bmxw.onrender.com/public/city/').then((res) => {
       setCityList(res.data);
     }).catch(error => {
       console.log(error);
@@ -120,14 +120,14 @@ function Admin({ children }) {
   });
 
   useEffect(() => {
-    axios.get("https://indian-tourism-1.onrender.com/public/tripCategory/").then((res => {
+    axios.get("https://indian-tourism-bmxw.onrender.com/public/tripCategory/").then((res => {
       setCategories(res.data);
     }));
   }, []);
 
   const handleStateForm = async (e) => {
     e.preventDefault();
-    await axios.post("https://indian-tourism-1.onrender.com/public/state/", {
+    await axios.post("https://indian-tourism-bmxw.onrender.com/public/state/", {
       stateName: stateNam
     });
     alert("saved succesfully!");
@@ -137,7 +137,7 @@ function Admin({ children }) {
   const handleCityForm = async (e) => {
     e.preventDefault();
     if (stateNamee != null) {
-      await axios.post(`https://indian-tourism-1.onrender.com/public/city/${stateNamee}`, {
+      await axios.post(`https://indian-tourism-bmxw.onrender.com/public/city/${stateNamee}`, {
         cityName: cityName
       });
       alert("saved successfully !");
