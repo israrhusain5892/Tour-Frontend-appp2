@@ -16,9 +16,9 @@ const MyCards = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const tripsResponse = await axios.get('https://indian-tourism-bmxw.onrender.com/public/trip/');
-                const statesResponse = await axios.get('https://indian-tourism-bmxw.onrender.com/public/state/');
-                const categoriesResponse = await axios.get('https://indian-tourism-bmxw.onrender.com/public/tripCategory/');
+                const tripsResponse = await axios.get('https://indian-tourism-1.onrender.com/public/trip/');
+                const statesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/state/');
+                const categoriesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/tripCategory/');
 
                 setAllTrips(tripsResponse.data); // Store all trips for filtering
                 setTrips(tripsResponse.data.slice(0, itemsPerPage)); // Load only initial trips

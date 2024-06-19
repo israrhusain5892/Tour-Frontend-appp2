@@ -32,7 +32,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   boxShadow: theme?.shadows?.[10] || '10px 10px 10px rgba(0, 0, 0, 0.3)',
   '&:hover': {
     transform: 'translateY(-10px)',
-    boxShadow: theme?.shadows?.[10] || '0 4px 20px #05631f9f',
+    boxShadow: theme?.shadows?.[10] || '0 3px 20px #600180',
   },
   display: 'flex',
   flexDirection: 'row',
@@ -68,7 +68,7 @@ const Services = () => {
   return (
     <Container className="pt-28">
       <Typography variant="h3" className="text-center pb-8 font-bold text-green-700">
-      <h2 className="text-base text-green-600 font-semibold tracking-wide uppercase">Services</h2>
+      {/* <h2 className="text-base text-green-600 font-semibold tracking-wide uppercase">Services</h2> */}
       <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Our Services</h1>
       </Typography>
       <Grid container spacing={4} className="p-4">

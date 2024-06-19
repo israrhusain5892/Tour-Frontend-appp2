@@ -5,7 +5,17 @@ export default {
   "./node_modules/tw-elements-react/dist/js/**/*.js"
 ],
   theme: {
-    extend: {},
+    extend: {
+      scale: {
+        '120': '1.2',
+      },
+    },
+  },
+  variants: {
+    extend: {
+      transform: ['hover'],
+      scale: ['hover'],
+    },
   },
   plugins: [],
 };

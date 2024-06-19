@@ -1,70 +1,70 @@
-import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import  img from '/16231558095-star-rating.svg';
-// import Navbar from '../Navbar';
+import React, { useState, useEffect } from 'react';
+import Navbar from "../Navbar/Navbar";
 
+const Favourites = () => {
+    const [favourites, setFavourites] = useState([]);
 
-function Favourites() {
+    useEffect(() => {
+        const savedFavourites = localStorage.getItem('favourites');
+        if (savedFavourites) {
+            setFavourites(JSON.parse(savedFavourites));
+        }
+    }, []);
 
-      const[data,setData]=useState([]);
+    const handleRemoveFromFavourites = (tripId) => {
+        const updatedFavourites = favourites.filter(fav => fav.tripId !== tripId);
+        setFavourites(updatedFavourites);
+        localStorage.setItem('favourites', JSON.stringify(updatedFavourites));
+    };
 
-      useEffect(()=>{
-             
-             axios.get("https://tourism-and-travel-management-system.onrender.com/public/trip/").then(res=>{
-                   
-                     setData(res.data);
-                     console.log(res.data);
-             }).catch(error=>{
-                  console.log(error);
-             })
-      },[])
-
-
-  return (
-//     <Base>
-    
-    <div className="container  mx-auto flex justify-center flex-col align-center">
-        {/* <Navbar></Navbar> */}
-        <h1 className=" bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-1 text-center text-2xl">FavouritePlaces</h1>
-         <div className="fluid-container mt-10">
-                 <div className='w-1000 flex-wrap flex gap-10 justify-center'>
-                         {     data.map((element,index)=>{
-
-                               return <div className='w-1/4 h-[370px] rounded shadow-md border border-gray-300 pb-24 pt-4 hover:scale-105'>
-
-                                      <div className='flex flex-wrap  mx-auto mt-2 justify-center align-center w-72 h-48' key={index}>
-                                    
-                                          <img  className=" object-cover text-center w-72 h-48"src={element.url}/>
-                                       </div>
-                                       
-                                       <div className='ml-2 mt-3 flex justify-between'>
-                                        <div>
-                                                <h3>{element.tripName}</h3>
-                                                <h4 className='text-green-600'>₹ {element.tripPrice}</h4>
-                                                <p className='w-[200px]'>{element.tripAddress}</p>
-                                         </div>
-
-                                         <div><div className='mr-4'> <img  className="w-32 mb-4 mr-8" src={img}></img></div>
-                                          
-                                          <div className='w-20 mt-16 '><button className='hover:bg-gray-600 rounded text-white py-1 w-24 bg-blue-600'>Book Now</button></div> </div>
-                                        
-                                        
-                                       </div>
+    return (
+        <>
+            <Navbar />
+            <div className="p-4 mt-20">
+                <h2 className="text-2xl font-bold mb-8 text-center text-[#600180]">My Favourites</h2>
+                {favourites.length === 0 ? (
+                    <p className="text-center text-[#600180]">No favourites yet.</p>
+                ) : (
+                    <div className="flex flex-wrap gap-6 justify-center">
+                        {favourites.map(trip => (
+                            <div key={trip.tripId} className="w-64 shadow-lg rounded-lg overflow-hidden bg-white transition-transform duration-300 hover:shadow-[#600180] hover:rounded-[20px] hover:scale-110 cursor-pointer">
+                                <div className="relative w-full h-40">
+                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+                                        <div className="flex-col gap-4 w-full flex items-center justify-center">
+                                            <div className="w-20 h-20 border-8 text-[#600180] text-4xl animate-spin border-[#600180] border-opacity-50 flex items-center justify-center border-t-gray-300 rounded-full">
+                                                <svg viewBox="0 0 24 24" fill="currentColor" height="1em" width="1em" className="animate-ping">
+                                                    <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <img
+                                            src={trip.url}
+                                            alt={trip.tripName}
+                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 transform hover:scale-120"
+                                            onLoad={(e) => e.target.style.display = 'block'}
+                                            style={{ display: 'none' }}
+                                        />
+                                    </div>
                                 </div>
-                              })
-                                 
-                         }
-                         
-                         
-                         
-                 </div>
-         </div>
-    </div>
+                                <div className="p-4">
+                                    <h3 className="text-lg text-[#600180] font-bold mb-2">{trip.tripName}</h3>
+                                    <p className="text-[#600180] text-opacity-70 mb-2">{trip.tripAddress}</p>
+                                    <p className="text-[#600180]">{trip.stateName}</p>
+                                    <p className="text-[#600180]">{trip.categoryName}</p>
+                                    <button
+                                        onClick={() => handleRemoveFromFavourites(trip.tripId)}
+                                        className="mt-2 px-4 py-2 border rounded-md transition-colors duration-200 bg-gray-200 text-[#600180] hover:bg-gray-300"
+                                    >
+                                        Remove from Favourites
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </>
+    );
+};
 
-   
-   
-  )
-  
-}
-
-export default Favourites
+export default Favourites;

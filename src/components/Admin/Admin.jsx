@@ -12,6 +12,7 @@ import photo from '../assets/Aditya_kapoor.jpg';
 import Loader from '../Loader';
 import 'remixicon/fonts/remixicon.css';
 import { Link } from 'react-router-dom';
+import HotelForm from './HotelForm';
 
 function Admin({ children }) {
   const [addressView, setAddressView] = useState(false);
@@ -85,7 +86,7 @@ function Admin({ children }) {
   const [tripResponse, setTripResponse] = useState([]);
 
   const fetchTodoList = async () => {
-    const res = await axios.get('https://indian-tourism-bmxw.onrender.com/public/trip/');
+    const res = await axios.get('https://indian-tourism-1.onrender.com/public/trip/');
     if (!res.ok) {
       throw new Error('Network response was not ok');
     }
@@ -98,7 +99,7 @@ function Admin({ children }) {
   });
 
   useEffect(() => {
-    axios.get("https://indian-tourism-bmxw.onrender.com/public/state/").then((res) => {
+    axios.get("https://indian-tourism-1.onrender.com/public/state/").then((res) => {
       setStates(res.data);
     }).catch((error) => {
       console.log(error);
@@ -106,7 +107,7 @@ function Admin({ children }) {
   }, []);
 
   useEffect(() => {
-    axios.get('https://indian-tourism-bmxw.onrender.com/public/city/').then((res) => {
+    axios.get('https://indian-tourism-1.onrender.com/public/city/').then((res) => {
       setCityList(res.data);
     }).catch(error => {
       console.log(error);
@@ -120,14 +121,14 @@ function Admin({ children }) {
   });
 
   useEffect(() => {
-    axios.get("https://indian-tourism-bmxw.onrender.com/public/tripCategory/").then((res => {
+    axios.get("https://indian-tourism-1.onrender.com/public/tripCategory/").then((res => {
       setCategories(res.data);
     }));
   }, []);
 
   const handleStateForm = async (e) => {
     e.preventDefault();
-    await axios.post("https://indian-tourism-bmxw.onrender.com/public/state/", {
+    await axios.post("https://indian-tourism-1.onrender.com/public/state/", {
       stateName: stateNam
     });
     alert("saved succesfully!");
@@ -137,7 +138,7 @@ function Admin({ children }) {
   const handleCityForm = async (e) => {
     e.preventDefault();
     if (stateNamee != null) {
-      await axios.post(`https://indian-tourism-bmxw.onrender.com/public/city/${stateNamee}`, {
+      await axios.post(`https://indian-tourism-1.onrender.com/public/city/${stateNamee}`, {
         cityName: cityName
       });
       alert("saved successfully !");
@@ -295,7 +296,7 @@ function Admin({ children }) {
                 <div className='text-white ml-8'>
                   <div className='hover:bg-blue-500'>
                     <i className="ri-checkbox-blank-circle-fill"></i>
-                    <Link className='px-2 font-semibold'>Add Hotel</Link>
+                    <Link to="/admin/hotelform" className='px-2 font-semibold'>Add Hotel</Link>
                   </div>
                   <div className='hover:bg-blue-500'>
                     <i className="ri-checkbox-blank-circle-fill"></i>

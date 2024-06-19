@@ -25,14 +25,14 @@ function TripForm(props) {
   
 
   useEffect(() => {
-    axios.get("https://indian-tourism-bmxw.onrender.com/public/tripCategory/").then((res => {
+    axios.get("https://indian-tourism-1.onrender.com/public/tripCategory/").then((res => {
       console.log(res.data);
       setCategories(res.data)
     }))
   }, [])
 
     useEffect(() => {
-        axios.get("https://indian-tourism-bmxw.onrender.com/public/state/").then((res) => {
+        axios.get("https://indian-tourism-1.onrender.com/public/state/").then((res) => {
           console.log(res.data);
           setStates(res.data);
         }).catch((error) => {
@@ -50,7 +50,7 @@ function TripForm(props) {
     
       useEffect(() => {
     
-        axios.get('https://indian-tourism-bmxw.onrender.com/public/city/').then((res) => {
+        axios.get('https://indian-tourism-1.onrender.com/public/city/').then((res) => {
           // console.log(res.data)
           setCityList(res.data);
         }).catch(error => {
@@ -103,7 +103,7 @@ function TripForm(props) {
         const state = "Uttar Pradesh";
     
         try {
-          const response = await axios.post(`https://indian-tourism-bmxw.onrender.com/public/trip/${stateNam}/${cityName}/${categoryName}`, formDataToSend, {
+          const response = await axios.post(`https://indian-tourism-1.onrender.com/public/trip/${stateNam}/${cityName}/${categoryName}`, formDataToSend, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }

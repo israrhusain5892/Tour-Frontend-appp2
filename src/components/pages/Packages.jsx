@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from "../Navbar/Navbar";
 import Select from 'react-select';
+import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
 
-const Packages = () => {
+const Packages = ({ setFavourites }) => {
     const [trips, setTrips] = useState([]);
     const [allTrips, setAllTrips] = useState([]);
     const [states, setStates] = useState([]);
@@ -12,15 +13,17 @@ const Packages = () => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true); // Loading state
+    const [searchQuery, setSearchQuery] = useState(''); // Search query state
+    const [favourites, setLocalFavourites] = useState([]); // Local state for favourites
     const itemsPerPage = 8; // 2 rows with 4 items each
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const tripsResponse = await axios.get('https://indian-tourism-bmxw.onrender.com/public/trip/');
-                const statesResponse = await axios.get('https://indian-tourism-bmxw.onrender.com/public/state/');
-                const categoriesResponse = await axios.get('https://indian-tourism-bmxw.onrender.com/public/tripCategory/');
+                const tripsResponse = await axios.get('https://indian-tourism-1.onrender.com/public/trip/');
+                const statesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/state/');
+                const categoriesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/tripCategory/');
 
                 setAllTrips(tripsResponse.data); // Store all trips for filtering
                 setTrips(tripsResponse.data.slice(0, itemsPerPage)); // Load only initial trips
@@ -32,24 +35,39 @@ const Packages = () => {
             setLoading(false);
         };
 
+        const loadFavourites = () => {
+            const savedFavourites = localStorage.getItem('favourites');
+            if (savedFavourites) {
+                setLocalFavourites(JSON.parse(savedFavourites));
+            }
+        };
+
         fetchData();
+        loadFavourites();
     }, []);
 
     const handleStateChange = (selectedOption) => {
         const state = selectedOption ? selectedOption.value : '';
         setSelectedState(state);
         setCurrentPage(1); // Reset to first page
-        filterTrips(state, selectedCategory, 1);
+        filterTrips(state, selectedCategory, 1, searchQuery);
     };
 
     const handleCategoryClick = (category) => {
         const newCategory = category.categoryName === selectedCategory ? '' : category.categoryName;
         setSelectedCategory(newCategory);
         setCurrentPage(1); // Reset to first page
-        filterTrips(selectedState, newCategory, 1);
+        filterTrips(selectedState, newCategory, 1, searchQuery);
     };
 
-    const filterTrips = (state, category, page) => {
+    const handleSearchChange = (event) => {
+        const query = event.target.value;
+        setSearchQuery(query);
+        setCurrentPage(1); // Reset to first page
+        filterTrips(selectedState, selectedCategory, 1, query);
+    };
+
+    const filterTrips = (state, category, page, query) => {
         setLoading(true);
         let filtered = allTrips;
 
@@ -59,6 +77,15 @@ const Packages = () => {
 
         if (category) {
             filtered = filtered.filter(trip => trip.categoryName === category);
+        }
+
+        if (query) {
+            filtered = filtered.filter(trip =>
+                trip.tripName.toLowerCase().includes(query.toLowerCase()) ||
+                trip.tripAddress.toLowerCase().includes(query.toLowerCase()) ||
+                trip.stateName.toLowerCase().includes(query.toLowerCase()) ||
+                trip.categoryName.toLowerCase().includes(query.toLowerCase())
+            );
         }
 
         const startIndex = (page - 1) * itemsPerPage;
@@ -73,8 +100,19 @@ const Packages = () => {
         const newPage = direction === 'next' ? currentPage + 1 : currentPage - 1;
         setCurrentPage(newPage);
         setTimeout(() => {
-            filterTrips(selectedState, selectedCategory, newPage);
+            filterTrips(selectedState, selectedCategory, newPage, searchQuery);
         }, 500); // Simulate loading time
+    };
+
+    const handleAddToFavourites = (trip) => {
+        setLocalFavourites(prevFavourites => {
+            const updatedFavourites = prevFavourites.some(fav => fav.tripId === trip.tripId)
+                ? prevFavourites.filter(fav => fav.tripId !== trip.tripId)
+                : [...prevFavourites, trip];
+            setFavourites(updatedFavourites); // Update the favourites in parent component
+            localStorage.setItem('favourites', JSON.stringify(updatedFavourites)); // Save to local storage
+            return updatedFavourites;
+        });
     };
 
     const customStyles = {
@@ -137,6 +175,16 @@ const Packages = () => {
                 </div>
                 {/* Right Side (Results and Filtering Options) */}
                 <div className="flex mt-8 flex-col flex-1">
+                    {/* Search Bar */}
+                    <div className="flex justify-center mb-6">
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Search..."
+                            className="w-2/3 max-w-md px-4 py-2 border rounded-md focus:outline-none focus:border-[#600180] bg-gray-200 hover:bg-gray-300"
+                        />
+                    </div>
                     {/* Results */}
                     <div className="flex flex-wrap gap-6">
                         {loading ? (
@@ -156,7 +204,7 @@ const Packages = () => {
                             ))
                         ) : (
                             trips.map(trip => (
-                                <div key={trip.tripId} className="w-64 shadow-[#000000] border rounded-lg overflow-hidden bg-white transition-transform duration-300 shadow-lg hover:shadow-[#600180] hover:border-[#600180] border-4 hover:rounded-[20px] hover:scale-110 cursor-pointer">
+                                <div key={trip.tripId} className="w-64 shadow-[#000000] rounded-lg overflow-hidden bg-white transition-transform duration-300 shadow-lg hover:shadow-[#600180]   hover:scale-110 cursor-pointer">
                                     <div className="relative w-full h-40">
                                         <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
                                             <div className="flex-col gap-4 w-full flex items-center justify-center">
@@ -169,7 +217,7 @@ const Packages = () => {
                                             <img
                                                 src={trip.url}
                                                 alt={trip.tripName}
-                                                className="absolute inset-0 w-full h-full object-cover"
+                                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 transform hover:scale-120"
                                                 onLoad={(e) => e.target.style.display = 'block'}
                                                 style={{ display: 'none' }}
                                             />
@@ -179,6 +227,12 @@ const Packages = () => {
                                         <h3 className="text-lg text-[#600180] font-bold mb-2">{trip.tripName}</h3>
                                         <p className="text-[#600180] text-opacity-70 mb-2">{trip.tripAddress}</p>
                                         <p className="text-[#600180] font-semibold">Price: ₹{trip.tripPrice}</p>
+                                        <button
+                                            onClick={() => handleAddToFavourites(trip)}
+                                            className={`mt-2 px-4 py-2 border rounded-md transition-colors duration-200 ${favourites.some(fav => fav.tripId === trip.tripId) ? 'bg-[#600180] text-white' : 'bg-gray-200 text-[#600180] hover:bg-gray-300'}`}
+                                        >
+                                            {favourites.some(fav => fav.tripId === trip.tripId) ? 'Added to Wish List' : 'Add to Wish List'}
+                                        </button>
                                     </div>
                                 </div>
                             ))
@@ -191,7 +245,8 @@ const Packages = () => {
                             className="px-4 py-2 border rounded-md bg-[#600180] text-white hover:bg-gray-300 text-black disabled:opacity-30"
                             disabled={currentPage === 1}
                         >
-                            Previous
+                            <FaArrowAltCircleLeft style={{ color: 'white', fontSize: '24px' }} />
+
                         </button>
                         <span className='font-bold text-[#600180]'>Page {currentPage} of {Math.ceil(allTrips.length / itemsPerPage)}</span>
                         <button
@@ -199,7 +254,7 @@ const Packages = () => {
                             className="px-4 py-2 border rounded-md bg-[#600180] text-white hover:bg-gray-300 text-black"
                             disabled={currentPage === Math.ceil(allTrips.length / itemsPerPage)}
                         >
-                            Next
+                            <FaArrowAltCircleRight style={{ color: 'white', fontSize: '24px' }} />
                         </button>
                     </div>
                 </div>
