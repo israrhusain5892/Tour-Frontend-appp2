@@ -4,6 +4,7 @@ import loginimg from '../assets/login_img.png';
 import axios from 'axios';
 import { doLogin } from '../Auth';
 import apiUrl from '../../Axios';
+import Navbar from "../Navbar/Navbar";
 
 const LoginForm = () => {
     const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -121,6 +122,7 @@ const LoginForm = () => {
 
     return (
         <section className="h-full flex flex-wrap items-center justify-center lg:justify-between">
+             <Navbar/>
             <div className="shrink-1 mb-2 mt-12 grow-0 basis-auto md:mb-0 md:w-9/12 lg:w-6/12 xl:w-6/12">
                 <img src={loginimg} className="w-full" alt="Sample image" />
             </div>
