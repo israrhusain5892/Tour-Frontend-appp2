@@ -33,7 +33,7 @@ const LoginForm = () => {
                 const emailDomain = loginForm.email.split('@')[1];
                 setStep(2);
                 doLogin(response.data, () => {
-                    if (emailDomain === 'numetry.com') {
+                    if (response.data.userDto.roles[0].name=== 'ROLE_ADMIN') {
                         navigate("/admin/dashboard");
                     } else {
                         navigate("/");
