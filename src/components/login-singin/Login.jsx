@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import loginimg from '../assets/login_img.png';
 import axios from 'axios';
 import { doLogin } from '../Auth';
+import apiUrl from '../../Axios';
 
 const LoginForm = () => {
     const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -25,7 +26,7 @@ const LoginForm = () => {
 
       const handleLogin = async () => {
         try {
-            const response = await axios.post('https://indian-tourism-bmxw.onrender.com/auth/login', loginForm);
+            const response = await axios.post(`${apiUrl}/auth/login`, loginForm);
 
             if (response.status === 200 || response.status === 202) {
                 alert('Login successful');

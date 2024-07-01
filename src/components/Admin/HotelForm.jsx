@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Admin.css';
 import Admin from './Admin';
+import apiUrl from '../../Axios';
+
 
 function HotelForm(props) {
   const [stateName, setStateName] = useState('');
@@ -19,7 +21,7 @@ function HotelForm(props) {
   const [cityName, setCityName] = useState('');
 
   useEffect(() => {
-    axios.get("https://indian-tourism-1.onrender.com/public/state/").then((res) => {
+    axios.get(`${apiUrl}/public/state/`).then((res) => {
       setStates(res.data);
     }).catch((error) => {
       console.log(error);
@@ -33,7 +35,7 @@ function HotelForm(props) {
   };
 
   useEffect(() => {
-    axios.get('https://indian-tourism-1.onrender.com/public/city/').then((res) => {
+    axios.get(`${apiUrl}/public/city/`).then((res) => {
       setCityList(res.data);
     }).catch(error => {
       console.log(error);
@@ -90,7 +92,7 @@ function HotelForm(props) {
     }
 
     try {
-      const response = await axios.post('https://indian-tourism-1.onrender.com/public/hotel', formDataToSend, {
+      const response = await axios.post(`${apiUrl}/public/hotel`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -105,7 +107,7 @@ function HotelForm(props) {
 
   return (
     <Admin>
-      <div className='mx-auto  mt-3 w-[1000px]'>
+      <div className='mx-auto  pt-28 w-[1000px]'>
         <h2 className="mx-auto text-center text-lg font-600 bg-[#e1bc4d] text-white">ADD HOTEL</h2>
         <div className='hotelForm mx-auto border'>
           <form className="hotelForm1" onSubmit={handleSubmit}>

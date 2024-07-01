@@ -7,7 +7,8 @@ import Contact from "./ContactUs";
 import './home.css';
 import Navbar from "../Navbar/Navbar";
 import Mycards from "./Mycards";
-
+import Footer from "../Footer/Footer";
+import ContactUs from "./ContactUs";
 export default function Home() {
 
 
@@ -19,7 +20,8 @@ export default function Home() {
       {/* <Mycards/> */}
       <Services />
       <Testimonials />
-      <Contact />
+      <ContactUs />
+      <Footer/>
     </div>
   );
 }

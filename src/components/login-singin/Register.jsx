@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import loginimg from '../assets/login_img.png';
+import apiUrl from '../../Axios';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -90,7 +91,7 @@ const Register = () => {
         e.preventDefault();
         if (handleValidation()) {
             try {
-                const response = await fetch('https://indian-tourism-bmxw.onrender.com/auth/register', {
+                const response = await fetch(`${apiUrl}/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

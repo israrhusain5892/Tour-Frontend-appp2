@@ -4,6 +4,8 @@ import { useState,useEffect } from 'react';
 import axios from 'axios';
 import tripImage from '../assets/travel-concept-with-baggage.jpg';
 import Admin from './Admin';
+import apiUrl from '../../Axios';
+
 
 function TripForm(props) {
        
@@ -25,14 +27,14 @@ function TripForm(props) {
   
 
   useEffect(() => {
-    axios.get("https://indian-tourism-1.onrender.com/public/tripCategory/").then((res => {
+    axios.get(`${apiUrl}/public/tripCategory/`).then((res => {
       console.log(res.data);
       setCategories(res.data)
     }))
   }, [])
 
     useEffect(() => {
-        axios.get("https://indian-tourism-1.onrender.com/public/state/").then((res) => {
+        axios.get(`${apiUrl}/public/state/`).then((res) => {
           console.log(res.data);
           setStates(res.data);
         }).catch((error) => {
@@ -50,7 +52,7 @@ function TripForm(props) {
     
       useEffect(() => {
     
-        axios.get('https://indian-tourism-1.onrender.com/public/city/').then((res) => {
+        axios.get(`${apiUrl}/public/city/`).then((res) => {
           // console.log(res.data)
           setCityList(res.data);
         }).catch(error => {
@@ -103,7 +105,7 @@ function TripForm(props) {
         const state = "Uttar Pradesh";
     
         try {
-          const response = await axios.post(`https://indian-tourism-1.onrender.com/public/trip/${stateNam}/${cityName}/${categoryName}`, formDataToSend, {
+          const response = await axios.post(`${apiUrl}/public/trip/${stateNam}/${cityName}/${categoryName}`, formDataToSend, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -118,7 +120,7 @@ function TripForm(props) {
     
     return (
       <Admin>
-         <div className=' mx-auto  mt-3 w-[1000px]'>
+         <div className=' mx-auto  pt-28 w-[1000px]'>
             <h2 className="mx-auto text-center text-lg font-600 bg-[#e1bc4d] text-white">ADD TRIP</h2>
          {/* <div className='w-[600px]'><img src={tripImage} className='w-[600px]'/></div> */}
           

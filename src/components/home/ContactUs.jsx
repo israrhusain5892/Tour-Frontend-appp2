@@ -35,7 +35,7 @@ function ContactUs() {
   };
 
   return (
-    <div className="w-full h-[400px] relative h-screen bg-fixed bg-center bg-no-repeat bg-cover" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)' }}>
+    <div className="w-full h-[400px] relative h-[400px] bg-fixed bg-center bg-no-repeat bg-cover" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)' }}>
       <div className="flex flex-col items-center justify-center h-full bg-blue-400 bg-opacity-20">
         <h1 className="text-4xl md:text-[2.5rem] lg:text-[2.75rem] xl:text-[3rem] font-playfair font-bold text-lime-100 mb-4">Contact us if you're ready</h1>
         <h3 className="text-lg md:text-xl lg:text-[1.75rem] xl:text-[2rem] font-playfair font-bold text-yellow-50 mb-6">Experience the wonders of India with personalized tours crafted just for you.</h3>

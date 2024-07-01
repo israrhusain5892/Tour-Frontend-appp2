@@ -3,6 +3,15 @@ import axios from 'axios';
 import Navbar from "../Navbar/Navbar";
 import Select from 'react-select';
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
+import ReactPaginate from 'react-paginate';
+import { Link } from 'react-router-dom';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import carousel styles
+import { Typewriter } from 'react-simple-typewriter'; // Import typewriter
+import Footer from '../Footer/Footer'
+import apiUrl from '../../Axios';
+
+
 
 const Packages = ({ setFavourites }) => {
     const [trips, setTrips] = useState([]);
@@ -16,17 +25,19 @@ const Packages = ({ setFavourites }) => {
     const [searchQuery, setSearchQuery] = useState(''); // Search query state
     const [favourites, setLocalFavourites] = useState([]); // Local state for favourites
     const itemsPerPage = 8; // 2 rows with 4 items each
+    const [pageCount, setPageCount] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const tripsResponse = await axios.get('https://indian-tourism-1.onrender.com/public/trip/');
-                const statesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/state/');
-                const categoriesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/tripCategory/');
+                const tripsResponse = await axios.get(`${apiUrl}/public/trip/`);
+                const statesResponse = await axios.get(`${apiUrl}/public/state/`);
+                const categoriesResponse = await axios.get(`${apiUrl}/public/tripCategory/`);
 
                 setAllTrips(tripsResponse.data); // Store all trips for filtering
                 setTrips(tripsResponse.data.slice(0, itemsPerPage)); // Load only initial trips
+                setPageCount(Math.ceil(tripsResponse.data.length / itemsPerPage));
                 setStates(statesResponse.data.map(state => ({ value: state.stateName, label: state.stateName })));
                 setCategories(categoriesResponse.data);
             } catch (error) {
@@ -63,7 +74,7 @@ const Packages = ({ setFavourites }) => {
     const handleSearchChange = (event) => {
         const query = event.target.value;
         setSearchQuery(query);
-        setCurrentPage(1); // Reset to first page
+        // setCurrentPage(1); // Reset to first page
         filterTrips(selectedState, selectedCategory, 1, query);
     };
 
@@ -91,17 +102,13 @@ const Packages = ({ setFavourites }) => {
         const startIndex = (page - 1) * itemsPerPage;
         setTimeout(() => {
             setTrips(filtered.slice(startIndex, startIndex + itemsPerPage));
+            setPageCount(Math.ceil(filtered.length / itemsPerPage));
             setLoading(false);
         }, 500); // Simulate loading time
     };
 
-    const handlePageChange = (direction) => {
-        setLoading(true);
-        const newPage = direction === 'next' ? currentPage + 1 : currentPage - 1;
-        setCurrentPage(newPage);
-        setTimeout(() => {
-            filterTrips(selectedState, selectedCategory, newPage, searchQuery);
-        }, 500); // Simulate loading time
+    const handlePageChange = ({ selected }) => {
+        filterTrips(selectedState, selectedCategory, selected, searchQuery);
     };
 
     const handleAddToFavourites = (trip) => {
@@ -144,7 +151,73 @@ const Packages = ({ setFavourites }) => {
     return (
         <>
             <Navbar />
-            <h2 className="text-5xl mt-28 font-bold text-center text-[#600180] mb-8">Our Exclusive Tour Packages</h2>
+            <Carousel showThumbs={false} infiniteLoop autoPlay showStatus={false} className='mt-20'>
+                <div className="relative h-[70vh]">
+                    <img src="https://wallpaperaccess.com/full/407993.jpg" alt="Slide 1" className=" inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <h3 className="text-3xl text-white">
+                            <Typewriter
+                                words={['Discover Amazing Places', 'Explore the Unseen', 'Adventure Awaits', 'Book Your Dream Trip']}
+                                loop={0}
+                                cursor
+                                cursorStyle="_"
+                                typeSpeed={70}
+                                deleteSpeed={50}
+                                delaySpeed={1000}
+                            />
+                        </h3>
+                    </div>
+                </div>
+                <div className="relative h-[70vh]">
+                    <img src="https://wallpaperaccess.com/full/407996.jpg" alt="Slide 2" className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <h3 className="text-3xl text-white">
+                            <Typewriter
+                                words={['Experience the Beauty', 'Travel with Comfort', 'Create Lasting Memories', 'Find Your Perfect Package']}
+                                loop={0}
+                                cursor
+                                cursorStyle="_"
+                                typeSpeed={70}
+                                deleteSpeed={50}
+                                delaySpeed={1000}
+                            />
+                        </h3>
+                    </div>
+                </div>
+                <div className="relative h-[70vh]">
+                    <img src="https://wallpaperaccess.com/full/7993364.jpg" alt="Slide 3" className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <h3 className="text-3xl text-white">
+                            <Typewriter
+                                words={['Unforgettable Journeys', 'Exciting Destinations', 'Plan Your Getaway', 'Adventure of a Lifetime']}
+                                loop={0}
+                                cursor
+                                cursorStyle="_"
+                                typeSpeed={70}
+                                deleteSpeed={50}
+                                delaySpeed={1000}
+                            />
+                        </h3>
+                    </div>
+                </div>
+                <div className="relative h-[70vh]">
+                    <img src="https://wallpaperaccess.com/full/2098379.jpg" alt="Slide 4" className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <h3 className="text-3xl text-white">
+                            <Typewriter
+                                words={['Travel Far and Wide', 'Discover Hidden Gems', 'Your Next Adventure', 'See the World']}
+                                loop={0}
+                                cursor
+                                cursorStyle="_"
+                                typeSpeed={70}
+                                deleteSpeed={50}
+                                delaySpeed={1000}
+                            />
+                        </h3>
+                    </div>
+                </div>
+            </Carousel>
+            <h2 className="text-5xl mt-8 font-bold text-center text-[#600180] mb-8">Our Exclusive Tour Packages</h2>
 
             <div className="flex items-center p-6 bg-gray-100 min-h-screen">
                 {/* Left Side (Dashboard Menu) */}
@@ -239,26 +312,30 @@ const Packages = ({ setFavourites }) => {
                         )}
                     </div>
                     {/* Filtering Options */}
-                    <div className="mt-8 flex justify-center items-center gap-4">
-                        <button
-                            onClick={() => handlePageChange('prev')}
-                            className="px-4 py-2 border rounded-md bg-[#600180] text-white hover:bg-gray-300 text-black disabled:opacity-30"
-                            disabled={currentPage === 1}
-                        >
-                            <FaArrowAltCircleLeft style={{ color: 'white', fontSize: '24px' }} />
-
-                        </button>
-                        <span className='font-bold text-[#600180]'>Page {currentPage} of {Math.ceil(allTrips.length / itemsPerPage)}</span>
-                        <button
-                            onClick={() => handlePageChange('next')}
-                            className="px-4 py-2 border rounded-md bg-[#600180] text-white hover:bg-gray-300 text-black"
-                            disabled={currentPage === Math.ceil(allTrips.length / itemsPerPage)}
-                        >
-                            <FaArrowAltCircleRight style={{ color: 'white', fontSize: '24px' }} />
-                        </button>
+                    <div className="flex justify-center mt-6">
+                        <ReactPaginate
+                            previousLabel={<FaArrowAltCircleLeft />}
+                            nextLabel={<FaArrowAltCircleRight />}
+                            breakLabel="..."
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={handlePageChange}
+                            containerClassName="pagination flex items-center space-x-2"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link px-3 py-0  rounded-md cursor-pointer hover:bg-gray-400 hover:rounded-md"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link mt-3 text-lg rounded-md hover:bg-gray-300"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link mt-3 text-lg rounded-md hover:bg-gray-300"
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link px-4 border rounded-md cursor-pointer hover:bg-gray-300"
+                            activeClassName="active rounded-md bg-[#600180] text-white"
+                        />
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

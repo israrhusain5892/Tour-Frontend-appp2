@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import apiUrl from '../../Axios';
 
 const MyCards = () => {
     const [trips, setTrips] = useState([]);
@@ -16,9 +17,9 @@ const MyCards = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const tripsResponse = await axios.get('https://indian-tourism-1.onrender.com/public/trip/');
-                const statesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/state/');
-                const categoriesResponse = await axios.get('https://indian-tourism-1.onrender.com/public/tripCategory/');
+                const tripsResponse = await axios.get(`${apiUrl}/public/trip/`);
+                const statesResponse = await axios.get(`${apiUrl}/public/state/`);
+                const categoriesResponse = await axios.get(`${apiUrl}/public/tripCategory/`);
 
                 setAllTrips(tripsResponse.data); // Store all trips for filtering
                 setTrips(tripsResponse.data.slice(0, itemsPerPage)); // Load only initial trips

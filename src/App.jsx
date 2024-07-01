@@ -15,6 +15,8 @@ import Admin from "./components/Admin/Admin";
 import TripForm from "./components/Admin/TripForm";
 import TripViewPage from "./components/Admin/TripViewPage";
 import HotelForm from "./components/Admin/HotelForm";
+import HotelViewPage from "./components/Admin/HotelViewPage";
+import TransportForm from "./components/Admin/BusForm";
 import {
   useQuery,
   useMutation,
@@ -51,10 +53,12 @@ function App() {
                 <Route path="tripview" element={<TripViewPage />} />
                 <Route path="dashboard" element={<Adminmain />} />
                 <Route path="hotelform" element={<HotelForm />} />
+                <Route path="hotelview" element={<HotelViewPage />} />
+                <Route path="transportform" element={<TransportForm />} />
               </Route>
             </Routes>
           </div>
-          <Footer />
+          
         </Router>
       </QueryClientProvider>
     </>
