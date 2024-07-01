@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Raj from '../../components/assets/Raj_Kumar.jpg'
 import Neha from '../../components/assets/Neha_Sharma.jpg'
 import Priya from '../../components/assets/Priya_Gupta.jpg'
-import Aditya from '../../components/assets/Aditya_Kapoor.jpg'
 import Sadiq from '../../components/assets/Sadiq_Basha.jpg'
 import Nayum from '../../components/assets/Nayum.jpg'
 import Aisha from '../../components/assets/Aisha.jpg'
