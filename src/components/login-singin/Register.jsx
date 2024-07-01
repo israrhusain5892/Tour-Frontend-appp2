@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import loginimg from '../assets/login_img.png';
 import apiUrl from '../../Axios';
+import Navbar from "../Navbar/Navbar";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -116,6 +117,7 @@ const Register = () => {
 
     return (
         <section>
+            <Navbar/>
             <div className="h-full">
                 <div className="flex h-full flex-wrap items-center justify-center lg:justify-between">
                     <div className="shrink-1 mb-2 mt-12 grow-0 basis-auto md:mt-16 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
