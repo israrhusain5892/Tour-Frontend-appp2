@@ -34,13 +34,6 @@ const TestimonialsSlider = () => {
             rating: 3.5
         },
         {
-            quote: "The Indian tourism website made planning our trip to India a breeze. They took care of all the logistics and recommended the best places to visit. We had an amazing time and can't wait to go back.",
-            author: "Aditya Kapoor",
-            city: "Chennai",
-            image: Aditya,
-            rating: 1.5
-        },
-        {
             quote: "The tour package was amazing! The guides were knowledgeable and the itinerary was well-planned. I had a wonderful time exploring the cultural and historical sights of India.",
             author: "Sadiq Basha",
             city: "Bangalore",
